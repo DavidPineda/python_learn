@@ -1,4 +1,5 @@
 #Python
+from doctest import Example
 from typing import Optional
 from enum import Enum
 
@@ -84,12 +85,14 @@ def show_person(
         min_length=1,
         max_length=50,
         title='Person Name',
-        description='This is the person name. Its between 1 and 50 charactares'
+        description='This is the person name. Its between 1 and 50 charactares',
+        example='Tatiana'
     ),
     age: int = Query(
         ...,
         title='Person Age',
-        description='This is the person age. Its required'
+        description='This is the person age. Its required',
+        example=25
     )
 ):
     return {name, age}
@@ -102,7 +105,8 @@ def show_person(
         ...,
         gt=0,
         title='Person Id',
-        description='This is required and grater than 0'
+        description='This is required and grater than 0',
+        example=1
     )
 ):
     return {person_id: "It exists!"}
@@ -115,7 +119,8 @@ def update_person(
         ...,
         gt=0,
         title='Person ID',
-        description='This is the person id'
+        description='This is the person id',
+        example=1
     ),
     person: Person = Body(...),
     location: Location = Body(...)
