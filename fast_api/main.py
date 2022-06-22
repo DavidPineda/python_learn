@@ -3,7 +3,7 @@ from typing import Optional
 from enum import Enum
 
 #Pydantic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, HttpUrl
 
 #FastApi
 from fastapi import FastAPI, Body, Path, Query
@@ -20,9 +20,18 @@ class HairColor(Enum):
     red = 'red'
 
 class Location(BaseModel):
-    country: int
-    state: int
-    city: int
+    country: int = Field(..., gt=0)
+    state: int = Field(..., gt=0)
+    city: int = Field(..., gt=0)
+
+    class Config:
+        schema_extra = {
+            'example': {
+                'country': 57,
+                'state': 1,
+                'city': 1,
+            }
+        }
 
 class Person(BaseModel):
     first_name: str = Field(
@@ -42,6 +51,19 @@ class Person(BaseModel):
     )
     hair_color: Optional[HairColor] = Field(default=None)
     is_married: Optional[bool] = Field(default=None)
+    web_site: Optional[HttpUrl] = Field(default=None)
+
+    class Config:
+        schema_extra = {
+            'example': {
+                'first_name': 'David',
+                'last_name': 'Pineda',
+                'age': 31,
+                'hair_color': 'blonde',
+                'is_married': True,
+                'web_site': 'https://davidpineda.com',
+            }
+        }
 
 @app.get('/')
 def home():
