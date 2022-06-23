@@ -34,7 +34,7 @@ class Location(BaseModel):
             }
         }
 
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name: str = Field(
         ...,
         min_length=1,
@@ -50,7 +50,6 @@ class Person(BaseModel):
         gt=0,
         le=115
     )
-    password: str = Field(..., min_length=8)
     hair_color: Optional[HairColor] = Field(default=None)
     is_married: Optional[bool] = Field(default=None)
     web_site: Optional[HttpUrl] = Field(default=None)
@@ -68,25 +67,11 @@ class Person(BaseModel):
             }
         }
 
-class PersonOut(BaseModel):
-    first_name: str = Field(
-        ...,
-        min_length=1,
-        max_length=50
-    )
-    last_name: str = Field(
-        ...,
-        min_length=1,
-        max_length=50
-    )
-    age: int = Field(
-        ...,
-        gt=0,
-        le=115
-    )
-    hair_color: Optional[HairColor] = Field(default=None)
-    is_married: Optional[bool] = Field(default=None)
-    web_site: Optional[HttpUrl] = Field(default=None)
+class Person(PersonBase):
+    password: str = Field(..., min_length=8)
+
+class PersonOut(PersonBase):
+    pass
 
 @app.get('/')
 def home():
@@ -94,7 +79,7 @@ def home():
 
 # Request and Response body
 
-@app.post('/person/new', response_model=Person, response_model_exclude={'password'})
+@app.post('/person/new', response_model=PersonOut)
 def create_person(person: Person = Body(...)):
     return person
 
