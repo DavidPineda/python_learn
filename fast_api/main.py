@@ -50,6 +50,7 @@ class Person(BaseModel):
         gt=0,
         le=115
     )
+    password: str = Field(..., min_length=8)
     hair_color: Optional[HairColor] = Field(default=None)
     is_married: Optional[bool] = Field(default=None)
     web_site: Optional[HttpUrl] = Field(default=None)
@@ -60,11 +61,32 @@ class Person(BaseModel):
                 'first_name': 'David',
                 'last_name': 'Pineda',
                 'age': 31,
+                'password': '12345678',
                 'hair_color': 'blonde',
                 'is_married': True,
                 'web_site': 'https://davidpineda.com',
             }
         }
+
+class PersonOut(BaseModel):
+    first_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
+    last_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
+    age: int = Field(
+        ...,
+        gt=0,
+        le=115
+    )
+    hair_color: Optional[HairColor] = Field(default=None)
+    is_married: Optional[bool] = Field(default=None)
+    web_site: Optional[HttpUrl] = Field(default=None)
 
 @app.get('/')
 def home():
@@ -72,7 +94,7 @@ def home():
 
 # Request and Response body
 
-@app.post('/person/new')
+@app.post('/person/new', response_model=Person, response_model_exclude={'password'})
 def create_person(person: Person = Body(...)):
     return person
 
