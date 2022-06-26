@@ -7,7 +7,7 @@ from enum import Enum
 from pydantic import BaseModel, Field, HttpUrl
 
 #FastApi
-from fastapi import FastAPI, Body, Path, Query
+from fastapi import FastAPI, Body, Path, Query, status
 
 app = FastAPI()
 
@@ -73,19 +73,29 @@ class Person(PersonBase):
 class PersonOut(PersonBase):
     pass
 
-@app.get('/')
+@app.get(
+    path='/',
+    status_code=status.HTTP_200_OK
+)
 def home():
     return {'hello': 'Wolrd'}
 
 # Request and Response body
 
-@app.post('/person/new', response_model=PersonOut)
+@app.post(
+    path='/person/new',
+    response_model=PersonOut,
+    status_code=status.HTTP_201_CREATED
+)
 def create_person(person: Person = Body(...)):
     return person
 
 #Validations: Query Parameters
 
-@app.get('/person/detail')
+@app.get(
+    path='/person/detail',
+    status_code=status.HTTP_200_OK
+)
 def show_person(
     name: Optional[str] = Query(
         None,
@@ -106,7 +116,10 @@ def show_person(
 
 #Validations: Path Parameters
 
-@app.get('/person/detail/{person_id}')
+@app.get(
+    path='/person/detail/{person_id}',
+    status_code=status.HTTP_200_OK
+)
 def show_person(
     person_id: int = Path(
         ...,
@@ -120,7 +133,10 @@ def show_person(
 
 #Validations: Request Body
 
-@app.put('/persons/{person_id}')
+@app.put(
+    path='/persons/{person_id}',
+    status_code=status.HTTP_200_OK
+)
 def update_person(
     person_id: int = Path(
         ...,
